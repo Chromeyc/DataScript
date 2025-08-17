@@ -1,4 +1,4 @@
-local drag = loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Drag-UI-SUPPORTS-MOBILE-22790"))()
+local drag = loadstring(game:HttpGet("https://raw.githubusercontent.com/Chromeyc/DataScript/refs/heads/main/random.lua"))()
 if not getgenv().bgcolor then
 	getgenv().bgcolor = Color3.fromRGB(60,60,60)
 end
