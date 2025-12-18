@@ -44,10 +44,29 @@ ScriptsTab:AddSection({
 ScriptsTab:AddButton({
 	Name = "Quadgame Leak (Enhanced)",
 	Callback = function()
-        -- AUTO-FIX: Immediately disable error popups before loading the script
-        pcall(function()
-            game:GetService("ScriptContext"):SetSignalEnabled("ScriptGenericError", false) 
-            game:GetService("LogService"):ClearOutput()
+        -- AGGRESSIVE ANTI-ERROR
+        task.spawn(function()
+            local ScriptContext = game:GetService("ScriptContext")
+            local LogService = game:GetService("LogService")
+            
+            -- 1. Connect a dummy function to absorb errors (often fixes the overlay)
+            pcall(function()
+                ScriptContext.Error:Connect(function() end)
+            end)
+
+            -- 2. Disable the signal
+            pcall(function()
+                ScriptContext:SetSignalEnabled("ScriptGenericError", false)
+            end)
+
+            -- 3. Clear logs loop
+            while true do
+                pcall(function()
+                    LogService:ClearOutput()
+                    ScriptContext:SetSignalEnabled("ScriptGenericError", false)
+                end)
+                task.wait(0.5)
+            end
         end)
         
         print("Loading Quadgame Leak (Enhanced)...")
