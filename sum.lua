@@ -1,11 +1,17 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
-local Window = OrionLib:MakeWindow({Name = "My Combined Script Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "CombinedHub"})
+local Window = OrionLib:MakeWindow({
+    Name = "My Combined Script Hub", 
+    HidePremium = false, 
+    SaveConfig = true, 
+    ConfigFolder = "CombinedHub",
+    IntroEnabled = false -- Disable intro to prevent sound errors
+})
 
 -- Tab: Scripts
 local ScriptsTab = Window:MakeTab({
 	Name = "Scripts",
-	Icon = "rbxassetid://4483345998",
+	Icon = "rbxassetid://7733658504", -- Lucide 'Scroll' Icon (Reliable)
 	PremiumOnly = false
 })
 
@@ -98,7 +104,7 @@ if http and http.request then
 end
 
 -- Load the external script
-loadstring(game:HttpGet("https://raw.githubusercontent.com/urgay123413/Quadgame/refs/heads/main/LEAK"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/urgay123413/Quadgame/main/LEAK"))()
         ]])()
   	end    
 })
