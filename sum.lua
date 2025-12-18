@@ -9,7 +9,8 @@ local Window = Fluent:CreateWindow({
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true, 
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+    MinimizeKey = Enum.KeyCode.LeftControl,
+    IntroEnabled = false
 })
 
 local Tabs = {
@@ -36,7 +37,7 @@ Tabs.Main:AddButton({
             pcall(function() ScriptContext:SetSignalEnabled("ScriptGenericError", false) end)
             while true do
                 pcall(function() LogService:ClearOutput(); ScriptContext:SetSignalEnabled("ScriptGenericError", false) end)
-                task.wait(1)
+                task.wait()
             end
         end)
         -- Anti-Kick
@@ -292,27 +293,21 @@ Tabs.Main:AddButton({
     Description = "Loads the Laser Gun lagg script (Gui).",
     Callback = function()
         loadstring([[
---// leaked by mistafeast (@jan.dll) if you paid for this you got scammed.
--- // discord.gg/autojoining > All!
+--// SAFE CLONEREF PATCH
+local cloneref = cloneref or function(o) return o end
 
--- // services
-get_service = function(service)
-	return cloneref(game:GetService(service));
-end;
+--// leaked by mistafeast (@jan.dll)
+get_service = function(service) return cloneref(game:GetService(service)) end
+local players = get_service("Players")
+local replicated_storage = get_service("ReplicatedStorage")
+local http_service = get_service("HttpService")
+local run_service = get_service("RunService")
+local user_input_service = get_service("UserInputService")
+local local_player = players.LocalPlayer
+local remote = replicated_storage.Packages.Net["RE/LaserGun_Fire"]
+local settings = require(replicated_storage.Shared.LaserGunsShared).Settings
 
-local players = get_service("Players");
-local replicated_storage = get_service("ReplicatedStorage");
-local http_service = get_service("HttpService");
-local run_service = get_service("RunService");
-local user_input_service = get_service("UserInputService");
-
--- // references
-local local_player = players.LocalPlayer;
-local remote = replicated_storage.Packages.Net["RE/LaserGun_Fire"];
-local settings = require(replicated_storage.Shared.LaserGunsShared).Settings;
-
--- // gun mods
-settings.Radius.Value = 256;
+settings.Radius.Value = 256
 settings.MaxBounces.Value = 9999;
 settings.MaxAge.Value = 1e6;
 settings.StunDuration.Value = 60;
