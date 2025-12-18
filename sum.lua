@@ -15,24 +15,49 @@ ScriptsTab:AddSection({
 
 -- 1. Quadgame Leak (leak.lua)
 ScriptsTab:AddButton({
-	Name = "Quadgame Leak (Kick Bypass)",
+	Name = "Quadgame Leak (Enhanced)",
 	Callback = function()
-        print("Loading Quadgame Leak...")
+        print("Loading Quadgame Leak (Enhanced)...")
         loadstring([[
+-- Enhanced Anti-Kick (Metamethod Hook)
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    if method == "Kick" then
+        warn("Blocked Kick attempt via " .. tostring(self))
+        return nil
+    end
+    return old(self, ...)
+end)
+setreadonly(mt, true)
+
+-- Legacy Hook (Just in case)
 hookfunction(game.Players.LocalPlayer.Kick, newcclosure(function()
- return warn("kick")
+ return warn("Blocked direct Kick")
 end))
+
+-- Safer Request Hook
 local req = request or http and http.request
 if not req then
- warn("no request")
+ warn("Executor does not support request")
  return
 end
 local old_request = req
 local hook_request = newcclosure(function(data)
- local url = (data.Url or data.URL or data.url or "")
+ local url = (data.Url or data.URL or data.url or ""):lower()
  local method = (data.Method or data.method):upper()
+ 
+ -- Debug: Print intercepted URLs (Press F9 to see)
+ -- print("Request: " .. url)
+
+ if url:find("roblox.com") then
+    return old_request(data)
+ end
+
  if url:find("validate") then
-  print("meow")
+  print("Spoofing Validate: " .. url)
   return {
    StatusMessage = "OK",
    Success = true,
@@ -43,12 +68,13 @@ local hook_request = newcclosure(function(data)
     active = true,
     max_gen = 400,
     status = "ok",
-    expires_at = "never",--"2025-11-11T04:32:52.713315+00:00",
+    expires_at = "never",
     min_gen = 100
    })
   }
  end
  if url:find("user") then
+  print("Spoofing User: " .. url)
   return {
    StatusMessage = "OK",
    Success = true,
@@ -61,6 +87,7 @@ local hook_request = newcclosure(function(data)
  end
  return old_request(data)
 end)
+
 if request then
  request = hook_request
 end
@@ -69,24 +96,8 @@ if http and http.request then
  http.request = hook_request
  setreadonly(http, true)
 end
--- .gg/luxar
--- ===============================
 
-_G.KEY = "CRACKEDBYIMEANIGUESS" -- Replace KEY with your key from /profile.
-
-_G.AUTOJOINER_CONFIG = {
-    MIN_GEN = 10,-- Minimum M/s you want to detect.
-    MAX_GEN = 9999,
-
-    MAX_JOIN_ATTEMPTS = 120,
-    GRAPPLE_SPEED = false, -- Set to true for grapple speed.
-
-    EXCLUDE = {},
-    INCLUDE = {
-        ["BRAINROT NAME"] = { OPERATOR = ">=", VALUE = 0 },
-    }
-}
-
+-- Load the external script
 loadstring(game:HttpGet("https://raw.githubusercontent.com/urgay123413/Quadgame/refs/heads/main/LEAK"))()
         ]])()
   	end    
