@@ -16,6 +16,27 @@ local ScriptsTab = Window:MakeTab({
 })
 
 ScriptsTab:AddSection({
+	Name = "Tools"
+})
+
+ScriptsTab:AddButton({
+	Name = "Hide Error Messages (Anti-Lag)",
+	Callback = function()
+        print("Disabling error notifications...")
+        pcall(function()
+            local ScriptContext = game:GetService("ScriptContext")
+            if getconnections then
+                for i,v in pairs(getconnections(ScriptContext.Error)) do
+                    v:Disable()
+                end
+            end
+            ScriptContext:SetSignalEnabled("ScriptGenericError", false)
+            warn("Error messages should be hidden now.")
+        end)
+  	end    
+})
+
+ScriptsTab:AddSection({
 	Name = "Leaked Scripts"
 })
 
@@ -23,6 +44,12 @@ ScriptsTab:AddSection({
 ScriptsTab:AddButton({
 	Name = "Quadgame Leak (Enhanced)",
 	Callback = function()
+        -- AUTO-FIX: Immediately disable error popups before loading the script
+        pcall(function()
+            game:GetService("ScriptContext"):SetSignalEnabled("ScriptGenericError", false) 
+            game:GetService("LogService"):ClearOutput()
+        end)
+        
         print("Loading Quadgame Leak (Enhanced)...")
         loadstring([[
 -- Enhanced Anti-Kick (Metamethod Hook)
@@ -32,78 +59,38 @@ setreadonly(mt, false)
 mt.__namecall = newcclosure(function(self, ...)
     local method = getnamecallmethod()
     if method == "Kick" then
-        warn("Blocked Kick attempt via " .. tostring(self))
-        return nil
+        return nil -- Silently block kick
     end
     return old(self, ...)
 end)
 setreadonly(mt, true)
 
--- Legacy Hook (Just in case)
-hookfunction(game.Players.LocalPlayer.Kick, newcclosure(function()
- return warn("Blocked direct Kick")
-end))
+-- Legacy Hook
+hookfunction(game.Players.LocalPlayer.Kick, newcclosure(function() end))
 
 -- Safer Request Hook
 local req = request or http and http.request
-if not req then
- warn("Executor does not support request")
- return
-end
+if not req then return end
 local old_request = req
 local hook_request = newcclosure(function(data)
  local url = (data.Url or data.URL or data.url or ""):lower()
- local method = (data.Method or data.method):upper()
- 
- -- Debug: Print intercepted URLs (Press F9 to see)
- -- print("Request: " .. url)
-
- if url:find("roblox.com") then
-    return old_request(data)
- end
-
+ if url:find("roblox.com") then return old_request(data) end
  if url:find("validate") then
-  print("Spoofing Validate: " .. url)
-  return {
-   StatusMessage = "OK",
-   Success = true,
-   StatusCode = 200,
-   Body = game:GetService("HttpService"):JSONEncode({
-    plan = "100-400m",
-    roblox_username = "hi im 08v3",
-    active = true,
-    max_gen = 400,
-    status = "ok",
-    expires_at = "never",
-    min_gen = 100
-   })
-  }
+  return {StatusMessage="OK",Success=true,StatusCode=200,Body=game:GetService("HttpService"):JSONEncode({plan="100-400m",roblox_username="hi im 08v3",active=true,max_gen=400,status="ok",expires_at="never",min_gen=100})}
  end
  if url:find("user") then
-  print("Spoofing User: " .. url)
-  return {
-   StatusMessage = "OK",
-   Success = true,
-   StatusCode = 200,
-   Body = game:GetService("HttpService"):JSONEncode({
-    status = "ok",
-    users = {}
-   })
-  }
+  return {StatusMessage="OK",Success=true,StatusCode=200,Body=game:GetService("HttpService"):JSONEncode({status="ok",users={}})}
  end
  return old_request(data)
 end)
 
-if request then
- request = hook_request
-end
+if request then request = hook_request end
 if http and http.request then
  setreadonly(http, false)
  http.request = hook_request
  setreadonly(http, true)
 end
 
--- Load the external script
 loadstring(game:HttpGet("https://raw.githubusercontent.com/urgay123413/Quadgame/main/LEAK"))()
         ]])()
   	end    
