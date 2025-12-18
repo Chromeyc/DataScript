@@ -4,75 +4,31 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 
 local Window = Fluent:CreateWindow({
     Title = "Sab Script Hub",
-    SubTitle = "Premium Combined Hub",
+    SubTitle = "Fluid Version",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true, -- The blur may be detectable, setting to false disables blur
+    Acrylic = true, 
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+    MinimizeKey = Enum.KeyCode.LeftControl
 })
-
--- Fluent provides Options global variable
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "home" }),
-    AutoJoiner = Window:AddTab({ Title = "Auto Joiner", Icon = "plane" }),
-    Tools = Window:AddTab({ Title = "Tools", Icon = "wrench" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
-local Options = Fluent.Options
-
 --------------------------------------------
--- TOOLS TAB
+-- QUADGAME
 --------------------------------------------
-
-Tabs.Tools:AddButton({
-    Title = "Aggressive Anti-Lag (Hide Errors)",
-    Description = "Stops red error messages from spamming your screen.",
-    Callback = function()
-        task.spawn(function()
-            local ScriptContext = game:GetService("ScriptContext")
-            local LogService = game:GetService("LogService")
-            
-            pcall(function()
-                ScriptContext.Error:Connect(function() end)
-            end)
-
-            pcall(function()
-                ScriptContext:SetSignalEnabled("ScriptGenericError", false)
-            end)
-
-            while true do
-                pcall(function()
-                    LogService:ClearOutput()
-                    ScriptContext:SetSignalEnabled("ScriptGenericError", false)
-                end)
-                task.wait(0.5)
-            end
-        end)
-        Fluent:Notify({
-            Title = "Success",
-            Content = "Error messages hidden.",
-            Duration = 5
-        })
-    end
-})
-
---------------------------------------------
--- MAIN TAB
---------------------------------------------
-
 Tabs.Main:AddParagraph({
     Title = "Quadgame Leak",
-    Content = "Enhanced with aggressive anti-kick and error suppression."
+    Content = "Enhanced protection enabled."
 })
 
 Tabs.Main:AddButton({
     Title = "Load Quadgame Leak",
-    Description = "Loads the leak with protections.",
     Callback = function()
-        -- Auto-run anti-error protection
+        -- Anti-Error
         task.spawn(function()
             local ScriptContext = game:GetService("ScriptContext")
             local LogService = game:GetService("LogService")
@@ -80,390 +36,480 @@ Tabs.Main:AddButton({
             pcall(function() ScriptContext:SetSignalEnabled("ScriptGenericError", false) end)
             while true do
                 pcall(function() LogService:ClearOutput(); ScriptContext:SetSignalEnabled("ScriptGenericError", false) end)
-                task.wait(0.5)
+                task.wait(1)
             end
         end)
+        -- Anti-Kick
+        local mt = getrawmetatable(game)
+        setreadonly(mt, false)
+        local old = mt.__namecall
+        mt.__namecall = newcclosure(function(self, ...)
+            if getnamecallmethod() == "Kick" then return end
+            return old(self, ...)
+        end)
+        setreadonly(mt, true)
+        hookfunction(game.Players.LocalPlayer.Kick, newcclosure(function() end))
 
-        loadstring([[
--- Enhanced Anti-Kick (Metamethod Hook)
-local mt = getrawmetatable(game)
-local old = mt.__namecall
-setreadonly(mt, false)
-mt.__namecall = newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-    if method == "Kick" then
-        return nil -- Silently block kick
+        -- Load
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/urgay123413/Quadgame/main/LEAK"))()
     end
-    return old(self, ...)
-end)
-setreadonly(mt, true)
+})
 
--- Legacy Hook
-hookfunction(game.Players.LocalPlayer.Kick, newcclosure(function() end))
+--------------------------------------------
+-- CRUSTY LASER BYPASS (User requested "Noclip stuff")
+--------------------------------------------
+Tabs.Main:AddButton({
+    Title = "Load Crusty Laser Bypass",
+    Description = "Bypasses lasers by teleporting under map.",
+    Callback = function()
+        loadstring([[
+-- THAT CODE PUBLISHED BY CRUSTY HUB 
+-- discord.gg/DBKxZQ8FmK
 
--- Safer Request Hook
-local req = request or http and http.request
-if not req then return end
-local old_request = req
-local hook_request = newcclosure(function(data)
- local url = (data.Url or data.URL or data.url or ""):lower()
- if url:find("roblox.com") then return old_request(data) end
- if url:find("validate") then
-  return {StatusMessage="OK",Success=true,StatusCode=200,Body=game:GetService("HttpService"):JSONEncode({plan="100-400m",roblox_username="hi im 08v3",active=true,max_gen=400,status="ok",expires_at="never",min_gen=100})}
- end
- if url:find("user") then
-  return {StatusMessage="OK",Success=true,StatusCode=200,Body=game:GetService("HttpService"):JSONEncode({status="ok",users={}})}
- end
- return old_request(data)
-end)
-
-if request then request = hook_request end
-if http and http.request then
- setreadonly(http, false)
- http.request = hook_request
- setreadonly(http, true)
-end
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/urgay123413/Quadgame/main/LEAK"))()
+local LaserBypassScreenGui = Instance.new("ScreenGui") -- Crusty Hub discord.gg/DBKxZQ8FmK
+LaserBypassScreenGui.Name = "CrustyLaserUI" -- Crusty Hub discord.gg/DBKxZQ8FmK
+LaserBypassScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") -- Crusty Hub discord.gg/DBKxZQ8FmK
+LaserBypassScreenGui.ResetOnSpawn = false -- Crusty Hub discord.gg/DBKxZQ8FmK
+local TweenService = game:GetService("TweenService") -- Crusty Hub discord.gg/DBKxZQ8FmK
+local UserInputService = game:GetService("UserInputService") -- Crusty Hub discord.gg/DBKxZQ8FmK
+local ReplicatedStorage = game:GetService("ReplicatedStorage") -- Crusty Hub discord.gg/DBKxZQ8FmK
+local Players = game:GetService("Players") -- Crusty Hub discord.gg/DBKxZQ8FmK
+local RunService = game:GetService("RunService") -- Crusty Hub discord.gg/DBKxZQ8FmK
+local LocalPlayer = Players.LocalPlayer -- Crusty Hub discord.gg/DBKxZQ8FmK
+local defaultPos = UDim2.new(0.5, -90, 0.5, -55) -- Crusty Hub discord.gg/DBKxZQ8FmK
+local qlfrFrame = Instance.new("Frame") -- Crusty Hub discord.gg/DBKxZQ8FmK
+qlfrFrame.Size = UDim2.new(0, 180, 0, 110) -- Crusty Hub discord.gg/DBKxZQ8FmK
+qlfrFrame.Position = defaultPos -- Crusty Hub discord.gg/DBKxZQ8FmK
+qlfrFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Crusty Hub discord.gg/DBKxZQ8FmK
+qlfrFrame.BorderSizePixel = 0 -- Crusty Hub discord.gg/DBKxZQ8FmK
+qlfrFrame.Parent = LaserBypassScreenGui -- Crusty Hub discord.gg/DBKxZQ8FmK
+local rpxfCorner = Instance.new("UICorner") -- Crusty Hub discord.gg/DBKxZQ8FmK
+rpxfCorner.CornerRadius = UDim.new(0, 15) -- Crusty Hub discord.gg/DBKxZQ8FmK
+rpxfCorner.Parent = qlfrFrame -- Crusty Hub discord.gg/DBKxZQ8FmK
+local xgfbTitle = Instance.new("TextLabel") -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.Size = UDim2.new(1, -10, 0, 25) -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.Position = UDim2.new(0, 5, 0, 5) -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.BackgroundTransparency = 1 -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.Text = "Crusty Laser Bypass" -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.TextColor3 = Color3.fromRGB(255, 255, 255) -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.Font = Enum.Font.SourceSansBold -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.TextSize = 16 -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.TextXAlignment = Enum.TextXAlignment.Left -- Crusty Hub discord.gg/DBKxZQ8FmK
+xgfbTitle.Parent = qlfrFrame -- Crusty Hub discord.gg/DBKxZQ8FmK
+local bypassButton = Instance.new("TextButton") -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.Size = UDim2.new(1, -20, 0, 35) -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.Position = UDim2.new(0, 10, 0, 35) -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70) -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.BorderSizePixel = 0 -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.Text = "Bypass" -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.Font = Enum.Font.SourceSansBold -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.TextSize = 16 -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.Parent = qlfrFrame -- Crusty Hub discord.gg/DBKxZQ8FmK
+local btnCorner = Instance.new("UICorner") -- Crusty Hub discord.gg/DBKxZQ8FmK
+btnCorner.CornerRadius = UDim.new(0, 10) -- Crusty Hub discord.gg/DBKxZQ8FmK
+btnCorner.Parent = bypassButton -- Crusty Hub discord.gg/DBKxZQ8FmK
+local cooldownLabel = Instance.new("TextLabel") -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.Size = UDim2.new(1, -20, 0, 25) -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.Position = UDim2.new(0, 10, 0, 75) -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.BackgroundTransparency = 1 -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.Text = "" -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.TextColor3 = Color3.fromRGB(255, 100, 100) -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.Font = Enum.Font.SourceSansBold -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.TextSize = 14 -- Crusty Hub discord.gg/DBKxZQ8FmK
+cooldownLabel.Parent = qlfrFrame -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.MouseEnter:Connect(function() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if not bypassButton:GetAttribute("OnCooldown") then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        TweenService:Create(bypassButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(100, 100, 100)}):Play() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+end) -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.MouseLeave:Connect(function() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if not bypassButton:GetAttribute("OnCooldown") then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        TweenService:Create(bypassButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(70, 70, 70)}):Play() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+end) -- Crusty Hub discord.gg/DBKxZQ8FmK
+local dragging = false -- Crusty Hub discord.gg/DBKxZQ8FmK
+local dragInput, dragStart, startPos -- Crusty Hub discord.gg/DBKxZQ8FmK
+local function update(input) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local delta = input.Position - dragStart -- Crusty Hub discord.gg/DBKxZQ8FmK
+    qlfrFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y) -- Crusty Hub discord.gg/DBKxZQ8FmK
+end -- Crusty Hub discord.gg/DBKxZQ8FmK
+qlfrFrame.InputBegan:Connect(function(input) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        dragging = true -- Crusty Hub discord.gg/DBKxZQ8FmK
+        dragStart = input.Position -- Crusty Hub discord.gg/DBKxZQ8FmK
+        startPos = qlfrFrame.Position -- Crusty Hub discord.gg/DBKxZQ8FmK
+        input.Changed:Connect(function() -- Crusty Hub discord.gg/DBKxZQ8FmK
+            if input.UserInputState == Enum.UserInputState.End then -- Crusty Hub discord.gg/DBKxZQ8FmK
+                dragging = false -- Crusty Hub discord.gg/DBKxZQ8FmK
+            end -- Crusty Hub discord.gg/DBKxZQ8FmK
+        end) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+end) -- Crusty Hub discord.gg/DBKxZQ8FmK
+qlfrFrame.InputChanged:Connect(function(input) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        dragInput = input -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+end) -- Crusty Hub discord.gg/DBKxZQ8FmK
+UserInputService.InputChanged:Connect(function(input) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if input == dragInput and dragging then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        update(input) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+end) -- Crusty Hub discord.gg/DBKxZQ8FmK
+local Net = require(ReplicatedStorage:WaitForChild("Packages").Net) -- Crusty Hub discord.gg/DBKxZQ8FmK
+local UseItem = Net:RemoteEvent("UseItem") -- Crusty Hub discord.gg/DBKxZQ8FmK
+local function getClosest() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local player = Players.LocalPlayer -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local character = player.Character -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if not character then return nil end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart") -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if not HumanoidRootPart then return nil end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local closestPlayer = nil -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local shortestDistance = math.huge -- Crusty Hub discord.gg/DBKxZQ8FmK
+    for _, otherPlayer in ipairs(Players:GetPlayers()) do -- Crusty Hub discord.gg/DBKxZQ8FmK
+        if otherPlayer ~= player then -- Crusty Hub discord.gg/DBKxZQ8FmK
+            local targetChar = otherPlayer.Character -- Crusty Hub discord.gg/DBKxZQ8FmK
+            local targetHRP = targetChar and targetChar:FindFirstChild("HumanoidRootPart") -- Crusty Hub discord.gg/DBKxZQ8FmK
+            if targetHRP then -- Crusty Hub discord.gg/DBKxZQ8FmK
+                local distance = (targetHRP.Position - HumanoidRootPart.Position).Magnitude -- Crusty Hub discord.gg/DBKxZQ8FmK
+                if distance < shortestDistance then -- Crusty Hub discord.gg/DBKxZQ8FmK
+                    shortestDistance = distance -- Crusty Hub discord.gg/DBKxZQ8FmK
+                    closestPlayer = otherPlayer -- Crusty Hub discord.gg/DBKxZQ8FmK
+                end -- Crusty Hub discord.gg/DBKxZQ8FmK
+            end -- Crusty Hub discord.gg/DBKxZQ8FmK
+        end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    return closestPlayer -- Crusty Hub discord.gg/DBKxZQ8FmK
+end -- Crusty Hub discord.gg/DBKxZQ8FmK
+local antiFall = false -- Crusty Hub discord.gg/DBKxZQ8FmK
+local antiConnection -- Crusty Hub discord.gg/DBKxZQ8FmK
+local function enableAntiFall() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if antiConnection then return end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    antiConnection = RunService.Heartbeat:Connect(function() -- Crusty Hub discord.gg/DBKxZQ8FmK
+        local player = Players.LocalPlayer -- Crusty Hub discord.gg/DBKxZQ8FmK
+        local character = player.Character -- Crusty Hub discord.gg/DBKxZQ8FmK
+        if character then -- Crusty Hub discord.gg/DBKxZQ8FmK
+            local humanoid = character:FindFirstChild("Humanoid") -- Crusty Hub discord.gg/DBKxZQ8FmK
+            if humanoid then -- Crusty Hub discord.gg/DBKxZQ8FmK
+                humanoid:ChangeState(Enum.HumanoidStateType.Physics) -- Crusty Hub discord.gg/DBKxZQ8FmK
+                local root = character:FindFirstChild("HumanoidRootPart") -- Crusty Hub discord.gg/DBKxZQ8FmK
+                if root then -- Crusty Hub discord.gg/DBKxZQ8FmK
+                    root.Velocity = Vector3.new(0, 0, 0) -- Crusty Hub discord.gg/DBKxZQ8FmK
+                    root.RotVelocity = Vector3.new(0, 0, 0) -- Crusty Hub discord.gg/DBKxZQ8FmK
+                end -- Crusty Hub discord.gg/DBKxZQ8FmK
+            end -- Crusty Hub discord.gg/DBKxZQ8FmK
+        end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end) -- Crusty Hub discord.gg/DBKxZQ8FmK
+end -- Crusty Hub discord.gg/DBKxZQ8FmK
+local function disableAntiFall() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if antiConnection then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        antiConnection:Disconnect() -- Crusty Hub discord.gg/DBKxZQ8FmK
+        antiConnection = nil -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local player = Players.LocalPlayer -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local character = player.Character -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if character then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        local humanoid = character:FindFirstChild("Humanoid") -- Crusty Hub discord.gg/DBKxZQ8FmK
+        if humanoid then -- Crusty Hub discord.gg/DBKxZQ8FmK
+            humanoid:ChangeState(Enum.HumanoidStateType.GettingUp) -- Crusty Hub discord.gg/DBKxZQ8FmK
+        end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+end -- Crusty Hub discord.gg/DBKxZQ8FmK
+local function executeBypass() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local player = Players.LocalPlayer -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local character = player.Character or player.CharacterAdded:Wait() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local humanoid = character:WaitForChild("Humanoid") -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local root = character:WaitForChild("HumanoidRootPart") -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local backpack = player:WaitForChild("Backpack") -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local target = getClosest() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if target then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        local targetHRP = target.Character and target.Character:FindFirstChild("HumanoidRootPart") -- Crusty Hub discord.gg/DBKxZQ8FmK
+        if targetHRP then -- Crusty Hub discord.gg/DBKxZQ8FmK
+            local tool = backpack:FindFirstChild("Web Slinger") or character:FindFirstChild("Web Slinger") -- Crusty Hub discord.gg/DBKxZQ8FmK
+            if tool then -- Crusty Hub discord.gg/DBKxZQ8FmK
+                if tool.Parent == backpack then -- Crusty Hub discord.gg/DBKxZQ8FmK
+                    humanoid:EquipTool(tool) -- Crusty Hub discord.gg/DBKxZQ8FmK
+                    task.wait(0.1) -- Crusty Hub discord.gg/DBKxZQ8FmK
+                end -- Crusty Hub discord.gg/DBKxZQ8FmK
+                UseItem:FireServer(targetHRP.Position, targetHRP) -- Crusty Hub discord.gg/DBKxZQ8FmK
+            end -- Crusty Hub discord.gg/DBKxZQ8FmK
+        end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    task.wait(0.3) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    enableAntiFall() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    local originalCFrame = root.CFrame -- Crusty Hub discord.gg/DBKxZQ8FmK
+    root.Anchored = true -- Crusty Hub discord.gg/DBKxZQ8FmK
+    root.CFrame = CFrame.new(0, -999999999999999993939383838383838383383888283883838383838383883838, 0) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    task.wait(0.5) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    root.CFrame = originalCFrame -- Crusty Hub discord.gg/DBKxZQ8FmK
+    root.Anchored = false -- Crusty Hub discord.gg/DBKxZQ8FmK
+    task.wait(0.1) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    root.Velocity = Vector3.new(0, 0, 0) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    root.RotVelocity = Vector3.new(0, 0, 0) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    task.wait(0.2) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    disableAntiFall() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if antiConnection then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        antiConnection:Disconnect() -- Crusty Hub discord.gg/DBKxZQ8FmK
+        antiConnection = nil -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+end -- Crusty Hub discord.gg/DBKxZQ8FmK
+bypassButton.MouseButton1Click:Connect(function() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    if bypassButton:GetAttribute("OnCooldown") then -- Crusty Hub discord.gg/DBKxZQ8FmK
+        return -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    bypassButton:SetAttribute("OnCooldown", true) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    bypassButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    bypassButton.Text = "Processing..." -- Crusty Hub discord.gg/DBKxZQ8FmK
+    executeBypass() -- Crusty Hub discord.gg/DBKxZQ8FmK
+    for i = 10, 1, -1 do -- Crusty Hub discord.gg/DBKxZQ8FmK
+        if i == 7 then -- Crusty Hub discord.gg/DBKxZQ8FmK
+            cooldownLabel.Text = "START STEALING" -- Crusty Hub discord.gg/DBKxZQ8FmK
+            bypassButton.Text = tostring(i) -- Crusty Hub discord.gg/DBKxZQ8FmK
+        elseif i < 7 then -- Crusty Hub discord.gg/DBKxZQ8FmK
+            cooldownLabel.Text = "START STEALING" -- Crusty Hub discord.gg/DBKxZQ8FmK
+            bypassButton.Text = tostring(i) -- Crusty Hub discord.gg/DBKxZQ8FmK
+        else -- Crusty Hub discord.gg/DBKxZQ8FmK
+            cooldownLabel.Text = "" -- Crusty Hub discord.gg/DBKxZQ8FmK
+            bypassButton.Text = tostring(i) -- Crusty Hub discord.gg/DBKxZQ8FmK
+        end -- Crusty Hub discord.gg/DBKxZQ8FmK
+        task.wait(1) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    end -- Crusty Hub discord.gg/DBKxZQ8FmK
+    bypassButton:SetAttribute("OnCooldown", false) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    bypassButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70) -- Crusty Hub discord.gg/DBKxZQ8FmK
+    bypassButton.Text = "Bypass" -- Crusty Hub discord.gg/DBKxZQ8FmK
+    cooldownLabel.Text = "" -- Crusty Hub discord.gg/DBKxZQ8FmK
+end) -- Crusty Hub discord.gg/DBKxZQ8FmK
         ]])()
     end
 })
 
-Tabs.Main:AddParagraph({
-    Title = "Other Scripts",
-    Content = "Various utility scripts."
-})
-
+--------------------------------------------
+-- LASER LAGGER
+--------------------------------------------
 Tabs.Main:AddButton({
-    Title = "Crusty Laser Bypass",
+    Title = "Load Laser Lagger",
+    Description = "Loads the Laser Gun lagg script (Gui).",
     Callback = function()
         loadstring([[
--- Crusty Hub Laser Bypass
-local LaserBypassScreenGui = Instance.new("ScreenGui")
-LaserBypassScreenGui.Name = "CrustyLaserUI"
-LaserBypassScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-LaserBypassScreenGui.ResetOnSpawn = false
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local defaultPos = UDim2.new(0.5, -90, 0.5, -55)
-local qlfrFrame = Instance.new("Frame")
-qlfrFrame.Size = UDim2.new(0, 180, 0, 110)
-qlfrFrame.Position = defaultPos
-qlfrFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-qlfrFrame.BorderSizePixel = 0
-qlfrFrame.Parent = LaserBypassScreenGui
-local rpxfCorner = Instance.new("UICorner")
-rpxfCorner.CornerRadius = UDim.new(0, 15)
-rpxfCorner.Parent = qlfrFrame
-local xgfbTitle = Instance.new("TextLabel")
-xgfbTitle.Size = UDim2.new(1, -10, 0, 25)
-xgfbTitle.Position = UDim2.new(0, 5, 0, 5)
-xgfbTitle.BackgroundTransparency = 1
-xgfbTitle.Text = "Crusty Laser Bypass"
-xgfbTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-xgfbTitle.Font = Enum.Font.SourceSansBold
-xgfbTitle.TextSize = 16
-xgfbTitle.TextXAlignment = Enum.TextXAlignment.Left
-xgfbTitle.Parent = qlfrFrame
-local bypassButton = Instance.new("TextButton")
-bypassButton.Size = UDim2.new(1, -20, 0, 35)
-bypassButton.Position = UDim2.new(0, 10, 0, 35)
-bypassButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-bypassButton.BorderSizePixel = 0
-bypassButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-bypassButton.Text = "Bypass"
-bypassButton.Font = Enum.Font.SourceSansBold
-bypassButton.TextSize = 16
-bypassButton.Parent = qlfrFrame
-local btnCorner = Instance.new("UICorner")
-btnCorner.CornerRadius = UDim.new(0, 10)
-btnCorner.Parent = bypassButton
-local cooldownLabel = Instance.new("TextLabel")
-cooldownLabel.Size = UDim2.new(1, -20, 0, 25)
-cooldownLabel.Position = UDim2.new(0, 10, 0, 75)
-cooldownLabel.BackgroundTransparency = 1
-cooldownLabel.Text = ""
-cooldownLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-cooldownLabel.Font = Enum.Font.SourceSansBold
-cooldownLabel.TextSize = 14
-cooldownLabel.Parent = qlfrFrame
+--// leaked by mistafeast (@jan.dll) if you paid for this you got scammed.
+-- // discord.gg/autojoining > All!
 
--- Dragging Logic
-local dragging, dragInput, dragStart, startPos
-local function update(input)
-    local delta = input.Position - dragStart
-    qlfrFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-qlfrFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = qlfrFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then dragging = false end
-        end)
-    end
-end)
-qlfrFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
-end)
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then update(input) end
-end)
+-- // services
+get_service = function(service)
+	return cloneref(game:GetService(service));
+end;
 
-local Net = require(ReplicatedStorage:WaitForChild("Packages").Net)
-local UseItem = Net:RemoteEvent("UseItem")
-local function getClosest()
-    local player = Players.LocalPlayer
-    local character = player.Character
-    if not character then return nil end
-    local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-    if not HumanoidRootPart then return nil end
-    local closestPlayer = nil
-    local shortestDistance = math.huge
-    for _, otherPlayer in ipairs(Players:GetPlayers()) do
-        if otherPlayer ~= player then
-            local targetChar = otherPlayer.Character
-            local targetHRP = targetChar and targetChar:FindFirstChild("HumanoidRootPart")
-            if targetHRP then
-                local distance = (targetHRP.Position - HumanoidRootPart.Position).Magnitude
-                if distance < shortestDistance then
-                    shortestDistance = distance
-                    closestPlayer = otherPlayer
-                end
-            end
-        end
-    end
-    return closestPlayer
-end
+local players = get_service("Players");
+local replicated_storage = get_service("ReplicatedStorage");
+local http_service = get_service("HttpService");
+local run_service = get_service("RunService");
+local user_input_service = get_service("UserInputService");
 
-local function executeBypass()
-    local player = Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-    local root = character:WaitForChild("HumanoidRootPart")
-    local backpack = player:WaitForChild("Backpack")
-    local target = getClosest()
-    if target then
-        local targetHRP = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-        if targetHRP then
-            local tool = backpack:FindFirstChild("Web Slinger") or character:FindFirstChild("Web Slinger")
-            if tool then
-                if tool.Parent == backpack then
-                    humanoid:EquipTool(tool)
-                    task.wait(0.1)
-                end
-                UseItem:FireServer(targetHRP.Position, targetHRP)
-            end
-        end
-    end
-    -- Anti Fall / Float Logic Simplified
-    local originalCFrame = root.CFrame
-    root.Anchored = true
-    root.CFrame = CFrame.new(0, -900000, 0)
-    task.wait(0.5)
-    root.CFrame = originalCFrame
-    root.Anchored = false
-end
+-- // references
+local local_player = players.LocalPlayer;
+local remote = replicated_storage.Packages.Net["RE/LaserGun_Fire"];
+local settings = require(replicated_storage.Shared.LaserGunsShared).Settings;
 
-bypassButton.MouseButton1Click:Connect(function()
-    if bypassButton:GetAttribute("OnCooldown") then return end
-    bypassButton:SetAttribute("OnCooldown", true)
-    bypassButton.Text = "Processing..."
-    executeBypass()
-    for i = 10, 1, -1 do
-        bypassButton.Text = tostring(i)
-        cooldownLabel.Text = (i < 7) and "START STEALING" or ""
-        task.wait(1)
-    end
-    bypassButton:SetAttribute("OnCooldown", false)
-    bypassButton.Text = "Bypass"
-    cooldownLabel.Text = ""
-end)
-        ]])()
-    end
-})
+-- // gun mods
+settings.Radius.Value = 256;
+settings.MaxBounces.Value = 9999;
+settings.MaxAge.Value = 1e6;
+settings.StunDuration.Value = 60;
+settings.ImpulseForce.Value = 1e6;
+settings.Cooldown.Value = 0;
 
-Tabs.Main:AddButton({
-    Title = "Lagger Laser",
-    Callback = function()
-        loadstring([[
--- Lagger Laser
-local players = game:GetService("Players")
-local replicated_storage = game:GetService("ReplicatedStorage")
-local http_service = game:GetService("HttpService")
-local run_service = game:GetService("RunService")
-local local_player = players.LocalPlayer
-local remote = replicated_storage.Packages.Net["RE/LaserGun_Fire"]
-local settings = require(replicated_storage.Shared.LaserGunsShared).Settings
+-- // states
+local lagger_enabled = false;
+local last_equipped = false;
 
-settings.Radius.Value = 256
-settings.MaxBounces.Value = 9999
-settings.MaxAge.Value = 1e6
-settings.StunDuration.Value = 60
-settings.ImpulseForce.Value = 1e6
-settings.Cooldown.Value = 0
+-- // ui
+local screen_gui = Instance.new("ScreenGui");
+screen_gui.Name = "discord.gg/autojoining | leaked ts";
+screen_gui.Parent = local_player:WaitForChild("PlayerGui");
 
-local lagger_enabled = false
-local tool_name = "Laser Gun"
+local frame = Instance.new("Frame");
+frame.Size = UDim2.new(0, 180, 0, 70);
+frame.Position = UDim2.new(0, 40, 0, 60);
+frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+frame.BackgroundTransparency = 1;
+frame.Active = true;
+frame.Parent = screen_gui;
 
-Fluent:Notify({Title="Lagger",Content="Toggle Lagger in the GUI"})
+local gradient = Instance.new("UIGradient");
+gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 183, 197)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(174, 226, 255))
+});
+gradient.Rotation = 45;
+gradient.Parent = frame;
 
--- Minimal GUI for toggle
-local screen = Instance.new("ScreenGui", local_player.PlayerGui)
-local btn = Instance.new("TextButton", screen)
-btn.Size = UDim2.new(0,150,0,50)
-btn.Position = UDim2.new(0,10,0.5,0)
-btn.Text = "Lagger: OFF"
-btn.BackgroundColor3 = Color3.new(0.2,0.2,0.2)
-btn.TextColor3 = Color3.new(1,1,1)
+local corner = Instance.new("UICorner");
+corner.CornerRadius = UDim.new(0, 12);
+corner.Parent = frame;
 
-btn.MouseButton1Click:Connect(function()
-    lagger_enabled = not lagger_enabled
-    btn.Text = lagger_enabled and "Lagger: ON" or "Lagger: OFF"
-    btn.BackgroundColor3 = lagger_enabled and Color3.new(0,0.6,0) or Color3.new(0.2,0.2,0.2)
-end)
+local button = Instance.new("TextButton");
+button.Size = UDim2.new(1, -20, 0, 40);
+button.Position = UDim2.new(0, 10, 0.5, -20);
+button.Text = "Lagger: OFF";
+button.TextColor3 = Color3.fromRGB(255, 255, 255);
+button.Font = Enum.Font.FredokaOne;
+button.TextSize = 20;
+button.BackgroundColor3 = Color3.fromRGB(255, 182, 193);
+button.AutoButtonColor = false;
+button.Parent = frame;
 
+local button_corner = Instance.new("UICorner");
+button_corner.CornerRadius = UDim.new(0, 10);
+button_corner.Parent = button;
+
+local button_gradient = Instance.new("UIGradient");
+button_gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 200, 200)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 220, 255))
+});
+button_gradient.Rotation = 90;
+button_gradient.Parent = button;
+
+-- // toggle
+local supp = false;
+
+button.MouseButton1Click:Connect(function()
+	if supp then
+		supp = false;
+		return;
+	end;
+	lagger_enabled = not lagger_enabled;
+	button.Text = lagger_enabled and "Lagger: ON" or "Lagger: OFF";
+	if lagger_enabled then
+		button_gradient.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 160, 160)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 200, 200))
+		});
+	else
+		button_gradient.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 200, 200)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 220, 255))
+		});
+	end;
+end);
+
+-- // draggable
+local dragging = false;
+local drag_input, drag_start, start_pos;
+local drag_threshold = 6;
+
+update_ = function(input)
+	local delta = input.Position - drag_start;
+	frame.Position = UDim2.new(
+		start_pos.X.Scale, start_pos.X.Offset + delta.X,
+		start_pos.Y.Scale, start_pos.Y.Offset + delta.Y
+	);
+end;
+
+attach_ = function(handle)
+	handle.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true;
+			drag_start = input.Position;
+			start_pos = frame.Position;
+			drag_input = nil;
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false;
+				end;
+			end);
+		end;
+	end);
+
+	handle.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			drag_input = input;
+		end;
+	end);
+end;
+
+attach_(frame);
+attach_(button);
+
+user_input_service.InputChanged:Connect(function(input)
+	if dragging and input == drag_input then
+		if (input.Position - drag_start).Magnitude > drag_threshold then
+			supp = true;
+		end;
+		update_(input);
+	end;
+end);
+
+-- // get nearest
+get_nearest = function()
+	local nearest_player;
+	local shortest_distance = math.huge;
+
+	local local_character = local_player.Character;
+	if not local_character or not local_character.PrimaryPart then
+		return nil;
+	end;
+
+	local local_position = local_character.PrimaryPart.Position;
+
+	for _, player in players:GetPlayers() do
+		local character = player.Character;
+		if player ~= local_player and character and character.PrimaryPart then
+			local distance = (local_position - character.PrimaryPart.Position).Magnitude;
+			if distance < shortest_distance then
+				shortest_distance = distance;
+				nearest_player = player;
+			end;
+		end;
+	end;
+
+	return nearest_player;
+end;
+
+-- // main
 run_service.RenderStepped:Connect(function()
-    if not lagger_enabled then return end
-    local char = local_player.Character
-    if not char then return end
-    local tool = char:FindFirstChildOfClass("Tool")
-    if not tool or tool.Name ~= tool_name then return end
-    
-    -- Find nearest
-    local myRoot = char:FindFirstChild("HumanoidRootPart")
-    if not myRoot then return end
-    local target, dist = nil, math.huge
-    for _,v in pairs(players:GetPlayers()) do
-        if v ~= local_player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-            local d = (v.Character.HumanoidRootPart.Position - myRoot.Position).Magnitude
-            if d < dist then target = v; dist = d end
-        end
-    end
-    
-    if target and target.Character then
-        local pos1 = myRoot.Position
-        local pos2 = target.Character.HumanoidRootPart.Position
-        local dir = (pos2 - pos1).Unit
-        local id = http_service:GenerateGUID(false):lower():gsub("%-", "")
-        remote:FireServer(id, pos1, dir, workspace:GetServerTimeNow())
-    end
-end)
+	local character = local_player.Character;
+	if not character then
+		return;
+	end;
+
+	local tool = character:FindFirstChildOfClass("Tool");
+	local tool_equipped = tool and tool.Name == "Laser Gun";
+
+	if tool_equipped ~= last_equipped then
+		last_equipped = tool_equipped;
+	end;
+
+	if not (lagger_enabled and tool_equipped) then
+		return;
+	end;
+
+	local target_player = get_nearest();
+	if not target_player then
+		return;
+	end;
+
+	local target_char = target_player.Character;
+	if not (target_char and target_char.PrimaryPart and character.PrimaryPart) then
+		return;
+	end;
+
+	local pos1, pos2 = character.PrimaryPart.Position, target_char.PrimaryPart.Position;
+	local direction = (pos2 - pos1).Unit;
+	local id = http_service:GenerateGUID(false):lower():gsub("%-", "");
+
+	remote:FireServer(id, pos1, direction, workspace:GetServerTimeNow());
+end);
         ]])()
-    end
-})
+    end    
 
---------------------------------------------
--- BRAINROT FINDER TAB
---------------------------------------------
-
-local BrainrotWebhookURL = "PUT WEBHOOK HERE"
-
-Tabs.Tools:AddInput("BrainrotWebhook", {
-    Title = "Brainrot Webhook URL",
-    Default = "PUT WEBHOOK HERE",
-    Placeholder = "https://discord.com/api/webhooks/...",
-    Numeric = false,
-    Finished = false,
-    Callback = function(Value)
-        BrainrotWebhookURL = Value
-    end
-})
-
-Tabs.Tools:AddButton({
-    Title = "Run Brainrot Finder",
-    Callback = function()
-        getgenv().webhook = BrainrotWebhookURL
-        getgenv().TargetPetNames = {
-            "Las Sis", "Guerriro Digitale", "Extinct Tralalero", "Fragola La La La",
-            "Graipuss Medussi", "Los Spyderinis", "Nooo My Hotspot", "Tortuginni Dragonfruitini",
-            "La Sahur Combinasion", "Quesadilla Crocodila", "La Grande Combinasion",
-            "Nuclearo Dinossauro", "La Extinct Grande", "Garama and Madundung",
-            "Pot Hotspot", "Las Vaquitas Saturnitas", "Chicleteira Bicicleteira",
-            "Secret Lucky Block", "Spaghetti Tualetti", "Agarrini la Palini",
-            "Los Noo My Hotspotsitos", "67", "Los Chicleteiras", "Los Combinasionas",
-            "Los Bros", "Celularcini Viciosini", "Los Hotspotsitos", "Tralaledon",
-            "Esok Sekolah", "Ketupat Kepat", "La Supreme Combinasion", "Ketchuru and Musturu",
-            "Dragon Cannelloni", "Strawberry Elephant"
-        }
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Chromeyc/DataScript/refs/heads/main/sss.lua"))()
-    end
-})
-
---------------------------------------------
--- AUTO JOINER TAB
---------------------------------------------
-
-Tabs.AutoJoiner:AddParagraph({
-    Title = "Chilli Auto Joiner V3",
-    Content = "Aggressive auto-joiner system."
-})
-
-Tabs.AutoJoiner:AddButton({
-    Title = "Launch Chilli Auto Joiner",
-    Callback = function()
-        loadstring([[
--- Chilli Hub Auto Joiner V3 (Condensed Loader for Fluent)
-_G.ChilliConfig = {
-    WebSocketURL = "ws://localhost:1488",
-    MinMoney = 0,
-    AutoJoinEnabled = true,
-    RetryDelay = 1.5,
-    InfiniteRetries = true,
-    PriorityMode = "newest",
-    ShowLogs = true,
-    MaxQueueSize = 50
-}
--- (Full Chilli Source code is large, assuming user wants the same logic. 
--- For brevity ensuring it runs smooth, I'm pasting the logic from previous file)
-
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
--- Using specific logic for joiner...
--- [Rest of the Chilli logic would go here. For cleaner code, I will simply load the previous version if available or paste the critical parts]
--- Since I can't require the file, I'll assume the user wants the direct logic.
--- Simplest way:
-local function start()
-    print("Starting Chilli Auto Joiner...")
-    -- (The heavy logic from the text file)
-    -- Ideally, we'd load this from a URL if it was hosted, but since it was provided as text:
-    
-    -- ... [Insert the massive logic block again? No, let's keep it simple for this re-write]
-    -- Since the user provided the file 'Chilli Hub AutoJoiner.txt', 
-    -- and we are rewriting 'hub.lua', I will assume I should embed it fully again.
-end
-start()
-        ]])()
-        -- Note: I am NOT pasting the full 500 lines of Chilli here to avoid hitting context limits mid-generation 
-        -- but normally I would. For now I'm triggering a simple print.
-        -- If you need the FULL Chilli code embedded here again, I can do that, but it might be better 
-        -- to keep it as a separate file and load it?
-        -- Actually, I'll attempt to load it from the file system if supported? No, Roblox exploits can't read user PC files usually (unless workspace).
-        -- I will paste the summarized version or the main loop.
-        
-        -- Let's define a simple loader that prints instructions or tries to load the logic.
-        print("Chilli Auto Joiner launched (Note: Copy the full code if you need the full V3 features).")
-    end
-})
-
--- SaveManager / InterfaceManager
+-- SaveManager
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 SaveManager:IgnoreThemeSettings()
-SaveManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("SabHub")
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 
 Window:SelectTab(Tabs.Main)
-
-Fluent:Notify({
-    Title = "Hub Loaded",
-    Content = "Sab Script Hub (Fluent) has been loaded successfully.",
-    Duration = 8
-})
